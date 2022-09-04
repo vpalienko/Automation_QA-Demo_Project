@@ -1,4 +1,4 @@
-from pages.elements_page import TextBoxPage
+from pages.elements_page import TextBoxPage, CheckBoxPage
 
 
 class TestElements:
@@ -18,3 +18,26 @@ class TestElements:
             assert email == output_email, "Email does not match the output"
             assert current_address == output_cur_addr, "Current address does not match the output"
             assert permanent_address == output_per_addr, "Permanent address does not match the output"
+
+    class TestCheckBox:
+        link = "https://demoqa.com/checkbox"
+
+        def test_items_can_be_expanded_and_collapsed(self, browser):
+            check_box_page = CheckBoxPage(browser, self.link)
+            check_box_page.open()
+            number_of_items_before_expand = check_box_page.get_number_of_items()
+            check_box_page.expand_all_items()
+            number_of_items_after_expand = check_box_page.get_number_of_items()
+            check_box_page.collapse_all_items()
+            number_of_items_after_collapse = check_box_page.get_number_of_items()
+            assert number_of_items_before_expand < number_of_items_after_expand, "Items are not expanded"
+            assert number_of_items_before_expand == number_of_items_after_collapse, "Items are not collapsed"
+
+        def test_select_random_checkboxes(self, browser):
+            check_box_page = CheckBoxPage(browser, self.link)
+            check_box_page.open()
+            check_box_page.expand_all_items()
+            check_box_page.click_random_checkboxes()
+            input_checkboxes = check_box_page.get_checked_checkboxes()
+            output_result = check_box_page.get_output_result()
+            assert input_checkboxes == output_result, "Selected checkboxes do not match the output checkboxes"

@@ -14,3 +14,12 @@ class TextBoxPageLocators:
     CREATED_EMAIL = (By.CSS_SELECTOR, "#output #email")
     CREATED_CURRENT_ADDRESS = (By.CSS_SELECTOR, "#output #currentAddress")
     CREATED_PERMANENT_ADDRESS = (By.CSS_SELECTOR, "#output #permanentAddress")
+
+
+class CheckBoxPageLocators:
+    EXPAND_ALL_BUTTON = (By.CSS_SELECTOR, "button[title='Expand all']")
+    COLLAPSE_ALL_BUTTON = (By.CSS_SELECTOR, "button[title='Collapse all']")
+    ITEM_TITLE = (By.CSS_SELECTOR, "span[class='rct-title']")
+    CHECKED_ITEM = (By.CSS_SELECTOR, "svg[class='rct-icon rct-icon-check']")
+    LIST_ITEM = (By.XPATH, ".//ancestor::span[@class='rct-text']")
+    OUTPUT_RESULT = (By.CSS_SELECTOR, "span[class='text-success']")
