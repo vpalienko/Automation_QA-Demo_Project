@@ -1,4 +1,5 @@
-from pages.elements_page import TextBoxPage, CheckBoxPage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage
+import pytest
 
 
 class TestElements:
@@ -41,3 +42,15 @@ class TestElements:
             input_checkboxes = check_box_page.get_checked_checkboxes()
             output_result = check_box_page.get_output_result()
             assert input_checkboxes == output_result, "Selected checkboxes do not match the output checkboxes"
+
+    class TestRadioButton:
+        link = "https://demoqa.com/radio-button"
+        radio_buttons = ["Yes", "Impressive", pytest.param("No", marks=pytest.mark.xfail(reason="button disabled"))]
+
+        @pytest.mark.parametrize("button", radio_buttons)
+        def test_radio_button_can_be_selected(self, browser, button):
+            radio_button_page = RadioButtonPage(browser, self.link)
+            radio_button_page.open()
+            radio_button_page.click_on_the_radio_button(button)
+            output = radio_button_page.get_output_result()
+            assert button == output, f"Radio button '{button}' is not selected or output result is incorrect"

@@ -23,3 +23,10 @@ class CheckBoxPageLocators:
     CHECKED_ITEM = (By.CSS_SELECTOR, "svg[class='rct-icon rct-icon-check']")
     LIST_ITEM = (By.XPATH, ".//ancestor::span[@class='rct-text']")
     OUTPUT_RESULT = (By.CSS_SELECTOR, "span[class='text-success']")
+
+
+class RadioButtonPageLocators:
+    RADIOBUTTON_YES = (By.CSS_SELECTOR, "label[for='yesRadio']")
+    RADIOBUTTON_IMPRESSIVE = (By.CSS_SELECTOR, "label[for='impressiveRadio']")
+    RADIOBUTTON_NO = (By.CSS_SELECTOR, "label[for='noRadio']")
+    OUTPUT_RESULT = (By.CSS_SELECTOR, "p span[class='text-success']")

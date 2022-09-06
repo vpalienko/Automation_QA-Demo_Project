@@ -1,4 +1,5 @@
-from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators
+from selenium.common.exceptions import TimeoutException
+from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators
 from pages.base_page import BasePage
 from generator.generator import generated_person
 import random
@@ -76,3 +77,19 @@ class CheckBoxPage(BasePage):
         for item in result_list:
             data.append(item.text.lower())
         return ", ".join(data)
+
+
+class RadioButtonPage(BasePage):
+    locators = RadioButtonPageLocators()
+
+    def click_on_the_radio_button(self, choice):
+        buttons = {"Yes": self.locators.RADIOBUTTON_YES,
+                   "Impressive": self.locators.RADIOBUTTON_IMPRESSIVE,
+                   "No": self.locators.RADIOBUTTON_NO}
+        self.element_is_visible(buttons[choice]).click()
+
+    def get_output_result(self):
+        try:
+            return self.element_is_present(self.locators.OUTPUT_RESULT).text
+        except TimeoutException:
+            return None
