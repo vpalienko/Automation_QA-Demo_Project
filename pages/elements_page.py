@@ -1,7 +1,9 @@
-from selenium.common.exceptions import TimeoutException
-from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators
+from locators.elements_page_locators import (TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators,
+                                             WebTablesPageLocators)
 from pages.base_page import BasePage
 from generator.generator import generated_person
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import Select
 import random
 
 
@@ -93,3 +95,63 @@ class RadioButtonPage(BasePage):
             return self.element_is_present(self.locators.OUTPUT_RESULT).text
         except TimeoutException:
             return None
+
+
+class WebTablesPage(BasePage):
+    locators = WebTablesPageLocators()
+
+    def add_new_person(self):
+        person_info = generated_person()
+        first_name = person_info.first_name
+        last_name = person_info.last_name
+        email = person_info.email
+        age = str(person_info.age)
+        salary = str(person_info.salary)
+        department = person_info.department
+        self.element_is_visible(self.locators.ADD_BUTTON).click()
+        self.element_is_visible(self.locators.FIRST_NAME_INPUT).send_keys(first_name)
+        self.element_is_visible(self.locators.LAST_NAME_INPUT).send_keys(last_name)
+        self.element_is_visible(self.locators.EMAIL_INPUT).send_keys(email)
+        self.element_is_visible(self.locators.AGE_INPUT).send_keys(age)
+        self.element_is_visible(self.locators.SALARY_INPUT).send_keys(salary)
+        self.element_is_visible(self.locators.DEPARTMENT_INPUT).send_keys(department)
+        self.element_is_visible(self.locators.SUBMIT).click()
+        return [first_name, last_name, age, email, salary, department]
+
+    def get_list_of_persons_in_table(self):
+        try:
+            list_of_persons = self.elements_are_present(self.locators.PERSON_IN_TABLE)
+            return [person.text.splitlines() for person in list_of_persons]
+        except TimeoutException:
+            return [self.element_is_present(self.locators.NO_ROWS_FOUND).text]
+
+    def search_for_person_by_keyword(self, key_word):
+        self.element_is_visible(self.locators.SEARCH_FIELD).clear()
+        self.element_is_visible(self.locators.SEARCH_FIELD).send_keys(key_word)
+
+    def update_person_information(self):
+        person_info = generated_person()
+        person_info_dict = {person_info.first_name: self.locators.FIRST_NAME_INPUT,
+                            person_info.last_name: self.locators.LAST_NAME_INPUT,
+                            str(person_info.age): self.locators.AGE_INPUT,
+                            person_info.email: self.locators.EMAIL_INPUT,
+                            str(person_info.salary): self.locators.SALARY_INPUT,
+                            person_info.department: self.locators.DEPARTMENT_INPUT}
+        self.element_is_visible(self.locators.EDIT_BUTTON).click()
+        for input_value, input_field in person_info_dict.items():
+            self.element_is_visible(input_field).clear()
+            self.element_is_visible(input_field).send_keys(input_value)
+        self.element_is_visible(self.locators.SUBMIT).click()
+        return list(person_info_dict.keys())
+
+    def delete_person(self):
+        self.element_is_visible(self.locators.DELETE_BUTTON).click()
+
+    def change_number_of_rows_per_page(self):
+        rows_per_page = Select(self.element_is_present(self.locators.ROWS_PER_PAGE))
+        number_of_rows_per_page = [option.get_attribute('value') for option in rows_per_page.options]
+        number_of_rows_in_table = []
+        for number_of_rows in number_of_rows_per_page:
+            rows_per_page.select_by_value(number_of_rows)
+            number_of_rows_in_table.append(str(len(self.elements_are_visible(self.locators.TABLE_ROW))))
+        return number_of_rows_per_page, number_of_rows_in_table
