@@ -1,5 +1,5 @@
 from locators.elements_page_locators import (TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators,
-                                             WebTablesPageLocators)
+                                             WebTablesPageLocators, ButtonsPageLocators)
 from pages.base_page import BasePage
 from generator.generator import generated_person
 from selenium.common.exceptions import TimeoutException
@@ -155,3 +155,22 @@ class WebTablesPage(BasePage):
             rows_per_page.select_by_value(number_of_rows)
             number_of_rows_in_table.append(str(len(self.elements_are_visible(self.locators.TABLE_ROW))))
         return number_of_rows_per_page, number_of_rows_in_table
+
+
+class ButtonsPage(BasePage):
+    locators = ButtonsPageLocators()
+
+    def perform_double_click_with_mouse(self):
+        self.double_click_action(self.element_is_visible(self.locators.DOUBLE_CLICK_BUTTON))
+        double_click_message = self.element_is_present(self.locators.DOUBLE_CLICK_MESSAGE).text
+        return double_click_message
+
+    def perform_right_click_with_mouse(self):
+        self.right_click_action(self.element_is_visible(self.locators.RIGHT_CLICK_BUTTON))
+        right_click_message = self.element_is_present(self.locators.RIGHT_CLICK_MESSAGE).text
+        return right_click_message
+
+    def perform_single_click_with_mouse(self):
+        self.click_action(self.element_is_visible(self.locators.CLICK_BUTTON))
+        single_click_message = self.element_is_present(self.locators.CLICK_MESSAGE).text
+        return single_click_message

@@ -52,3 +52,12 @@ class WebTablesPageLocators:
     DELETE_BUTTON = (By.CSS_SELECTOR, "span[title='Delete']")
     NO_ROWS_FOUND = (By.CSS_SELECTOR, "div[class='rt-noData']")
     ROWS_PER_PAGE = (By.CSS_SELECTOR, "select[aria-label='rows per page']")
+
+
+class ButtonsPageLocators:
+    DOUBLE_CLICK_BUTTON = (By.CSS_SELECTOR, "button[id='doubleClickBtn']")
+    RIGHT_CLICK_BUTTON = (By.CSS_SELECTOR, "button[id='rightClickBtn']")
+    CLICK_BUTTON = (By.CSS_SELECTOR, "div[class='mt-4']:nth-child(3) button")
+    DOUBLE_CLICK_MESSAGE = (By.CSS_SELECTOR, "p[id='doubleClickMessage']")
+    RIGHT_CLICK_MESSAGE = (By.CSS_SELECTOR, "p[id='rightClickMessage']")
+    CLICK_MESSAGE = (By.CSS_SELECTOR, "p[id='dynamicClickMessage']")

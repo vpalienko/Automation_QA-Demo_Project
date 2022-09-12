@@ -1,4 +1,4 @@
-from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablesPage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage
 import pytest
 import random
 
@@ -99,3 +99,16 @@ class TestElements:
             web_tables_page.open()
             number_of_rows_per_page, number_of_rows_in_table = web_tables_page.change_number_of_rows_per_page()
             assert number_of_rows_per_page == number_of_rows_in_table, "The number of rows in the table is not changed"
+
+    class TestButtons:
+        link = "https://demoqa.com/buttons"
+
+        def test_different_types_of_mouse_clicks(self, browser):
+            buttons_page = ButtonsPage(browser, self.link)
+            buttons_page.open()
+            double_click_button = buttons_page.perform_double_click_with_mouse()
+            right_click_button = buttons_page.perform_right_click_with_mouse()
+            single_click_button = buttons_page.perform_single_click_with_mouse()
+            assert double_click_button == "You have done a double click", "'Double Click Me' button is not pressed"
+            assert right_click_button == "You have done a right click", "'Right Click Me' button is not pressed"
+            assert single_click_button == "You have done a dynamic click", "'Click Me' button is not pressed"
