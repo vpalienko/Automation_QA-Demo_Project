@@ -1,10 +1,11 @@
 from locators.elements_page_locators import (TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators,
-                                             WebTablesPageLocators, ButtonsPageLocators)
+                                             WebTablesPageLocators, ButtonsPageLocators, LinksPageLocators)
 from pages.base_page import BasePage
 from generator.generator import generated_person
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import Select
 import random
+import requests
 
 
 class TextBoxPage(BasePage):
@@ -174,3 +175,39 @@ class ButtonsPage(BasePage):
         self.click_action(self.element_is_visible(self.locators.CLICK_BUTTON))
         single_click_message = self.element_is_present(self.locators.CLICK_MESSAGE).text
         return single_click_message
+
+
+class LinksPage(BasePage):
+    locators = LinksPageLocators()
+
+    def check_link_opened_in_new_tab(self, link):
+        links = {"simple_link": self.locators.SIMPLE_LINK, "dynamic_link": self.locators.DYNAMIC_LINK}
+        link_locator = self.element_is_visible(links[link])
+        url_link = link_locator.get_attribute("href")
+        request = requests.get(url_link)
+        if request.status_code < 400:
+            link_locator.click()
+            tabs = self.browser.window_handles
+            if len(tabs) == 2:
+                self.switch_to_opened_window()
+            return len(tabs), request.status_code
+        else:
+            return False, request.status_code
+
+    def check_link_sends_api_call(self, link_status):
+        links = {"Created": {"link": self.locators.CREATED_LINK, "link_url": "created"},
+                 "No Content": {"link": self.locators.NO_CONTENT_LINK, "link_url": "no-content"},
+                 "Moved Permanently": {"link": self.locators.MOVED_LINK, "link_url": "moved"},
+                 "Bad Request": {"link": self.locators.BAD_REQUEST_LINK, "link_url": "bad-request"},
+                 "Unauthorized": {"link": self.locators.UNAUTHORIZED_LINK, "link_url": "unauthorized"},
+                 "Forbidden": {"link": self.locators.FORBIDDEN_LINK, "link_url": "forbidden"},
+                 "Not Found": {"link": self.locators.NOT_FOUND_LINK, "link_url": "invalid-url"}}
+        self.element_is_visible(links[link_status]["link"]).click()
+        url_link = f"https://demoqa.com/{links[link_status]['link_url']}"
+        request = requests.get(url_link)
+        status_code = request.status_code
+        status = request.reason
+        return str(status_code), status
+
+    def get_output_message(self):
+        return self.element_is_present(self.locators.OUTPUT_MESSAGE).text

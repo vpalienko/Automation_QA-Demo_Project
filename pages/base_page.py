@@ -47,3 +47,6 @@ class BasePage:
         action = ActionChains(self.browser)
         action.click(element)
         action.perform()
+
+    def switch_to_opened_window(self):
+        self.browser.switch_to.window(self.browser.window_handles[1])

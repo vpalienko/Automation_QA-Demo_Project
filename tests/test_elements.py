@@ -1,4 +1,4 @@
-from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage, LinksPage
 import pytest
 import random
 
@@ -112,3 +112,25 @@ class TestElements:
             assert double_click_button == "You have done a double click", "'Double Click Me' button is not pressed"
             assert right_click_button == "You have done a right click", "'Right Click Me' button is not pressed"
             assert single_click_button == "You have done a dynamic click", "'Click Me' button is not pressed"
+
+    class TestLinks:
+        link = "https://demoqa.com/links"
+        new_tab_links = ["simple_link", "dynamic_link"]
+        api_call_links = [("201", "Created"), ("204", "No Content"), ("301", "Moved Permanently"),
+                          ("400", "Bad Request"), ("401", "Unauthorized"), ("403", "Forbidden"), ("404", "Not Found")]
+
+        @pytest.mark.parametrize("link", new_tab_links)
+        def test_link_is_opened_in_new_tab(self, browser, link):
+            links_page = LinksPage(browser, self.link)
+            links_page.open()
+            tabs_count, status_code = links_page.check_link_opened_in_new_tab(link)
+            assert tabs_count == 2 and status_code < 400, "Link is not opened in a new tab or link is incorrect"
+
+        @pytest.mark.parametrize("code, status", api_call_links)
+        def test_link_should_send_api_call(self, browser, code, status):
+            links_page = LinksPage(browser, self.link)
+            links_page.open()
+            returned_code, returned_status = links_page.check_link_sends_api_call(status)
+            message = links_page.get_output_message()
+            assert returned_code == code and returned_status == status, "Incorrect code or status is returned"
+            assert returned_code in message and returned_status in message, "Incorrect code or status is displayed"
