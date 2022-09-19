@@ -1,5 +1,6 @@
 from locators.elements_page_locators import (TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators,
-                                             WebTablesPageLocators, ButtonsPageLocators, LinksPageLocators)
+                                             WebTablesPageLocators, ButtonsPageLocators, LinksPageLocators,
+                                             BrokenLinksImagesPageLocators)
 from pages.base_page import BasePage
 from generator.generator import generated_person
 from selenium.common.exceptions import TimeoutException
@@ -211,3 +212,26 @@ class LinksPage(BasePage):
 
     def get_output_message(self):
         return self.element_is_present(self.locators.OUTPUT_MESSAGE).text
+
+
+class BrokenLinksImagesPage(BasePage):
+    locators = BrokenLinksImagesPageLocators()
+
+    def check_image_is_visible(self, image_type):
+        images = {"Valid image": self.locators.VALID_IMAGE, "Broken image": self.locators.BROKEN_IMAGE}
+        image = self.element_is_visible(images[image_type])
+        width = image.get_attribute("naturalWidth")
+        height = image.get_attribute("naturalHeight")
+        if width != "0" and height != "0":
+            return True
+        else:
+            return False
+
+    def check_link_is_valid(self, link_type):
+        links = {"Valid Link": self.locators.VALID_LINK, "Broken Link": self.locators.BROKEN_LINK}
+        href_link = self.element_is_present(links[link_type]).get_attribute("href")
+        request = requests.get(href_link)
+        if request.status_code < 400:
+            return True
+        else:
+            return False

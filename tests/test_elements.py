@@ -1,4 +1,5 @@
-from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage, LinksPage
+from pages.elements_page import (TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage, LinksPage,
+                                 BrokenLinksImagesPage)
 import pytest
 import random
 
@@ -134,3 +135,22 @@ class TestElements:
             message = links_page.get_output_message()
             assert returned_code == code and returned_status == status, "Incorrect code or status is returned"
             assert returned_code in message and returned_status in message, "Incorrect code or status is displayed"
+
+    class TestBrokenLinksImages:
+        link = "https://demoqa.com/broken"
+        image_links = ["Valid image", pytest.param("Broken image", marks=pytest.mark.xfail(reason="known issue"))]
+        url_links = ["Valid Link", pytest.param("Broken Link", marks=pytest.mark.xfail(reason="known issue"))]
+
+        @pytest.mark.parametrize("image", image_links)
+        def test_image_link_is_valid(self, browser, image):
+            broken_links_images_page = BrokenLinksImagesPage(browser, self.link)
+            broken_links_images_page.open()
+            visible_image = broken_links_images_page.check_image_is_visible(image)
+            assert visible_image, "Image link is broken"
+
+        @pytest.mark.parametrize("link", url_links)
+        def test_url_link_is_valid(self, browser, link):
+            broken_links_images_page = BrokenLinksImagesPage(browser, self.link)
+            broken_links_images_page.open()
+            valid_link = broken_links_images_page.check_link_is_valid(link)
+            assert valid_link, "URL link is broken"

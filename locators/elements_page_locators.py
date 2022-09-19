@@ -77,3 +77,10 @@ class LinksPageLocators:
     FORBIDDEN_LINK = (By.CSS_SELECTOR, "a[id='forbidden']")
     NOT_FOUND_LINK = (By.CSS_SELECTOR, "a[id='invalid-url']")
     OUTPUT_MESSAGE = (By.CSS_SELECTOR, "p[id='linkResponse']")
+
+
+class BrokenLinksImagesPageLocators:
+    VALID_IMAGE = (By.XPATH, "//p[text()='Valid image']/following-sibling::img[1]")
+    BROKEN_IMAGE = (By.XPATH, "//p[text()='Broken image']/following-sibling::img[1]")
+    VALID_LINK = (By.XPATH, "//p[text()='Valid Link']/following-sibling::a[1]")
+    BROKEN_LINK = (By.XPATH, "//p[text()='Broken Link']/following-sibling::a[1]")
