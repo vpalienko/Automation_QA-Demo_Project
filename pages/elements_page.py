@@ -1,12 +1,15 @@
 from locators.elements_page_locators import (TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators,
                                              WebTablesPageLocators, ButtonsPageLocators, LinksPageLocators,
-                                             BrokenLinksImagesPageLocators)
+                                             BrokenLinksImagesPageLocators, UploadAndDownloadPageLocators)
 from pages.base_page import BasePage
 from generator.generator import generated_person
-from selenium.common.exceptions import TimeoutException
+from conftest import root_dir
+from selenium.common.exceptions import TimeoutException, InvalidArgumentException
 from selenium.webdriver.support.ui import Select
 import random
 import requests
+import os
+import time
 
 
 class TextBoxPage(BasePage):
@@ -235,3 +238,36 @@ class BrokenLinksImagesPage(BasePage):
             return True
         else:
             return False
+
+
+class UploadAndDownloadPage(BasePage):
+    locators = UploadAndDownloadPageLocators()
+
+    def download_file(self):
+        self.element_is_visible(self.locators.DOWNLOAD_BUTTON).click()
+
+    def get_downloaded_file_name(self):
+        return self.element_is_present(self.locators.DOWNLOAD_BUTTON).get_attribute("download")
+
+    def check_downloaded_file_exists(self, timeout=5):
+        file_name = self.get_downloaded_file_name()
+        file_path = os.path.join(root_dir, file_name)
+        while timeout:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                return True
+            time.sleep(1)
+            timeout -= 1
+
+    def upload_file(self, file_to_upload):
+        try:
+            self.element_is_visible(self.locators.UPLOAD_BUTTON).send_keys(file_to_upload)
+            return file_to_upload.rsplit("\\", maxsplit=1)[1]
+        except InvalidArgumentException:
+            return None
+
+    def get_upload_path(self):
+        try:
+            return self.element_is_present(self.locators.UPLOADED_FILE_PATH).text
+        except TimeoutException:
+            return []

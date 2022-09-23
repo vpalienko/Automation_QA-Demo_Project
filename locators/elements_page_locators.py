@@ -84,3 +84,9 @@ class BrokenLinksImagesPageLocators:
     BROKEN_IMAGE = (By.XPATH, "//p[text()='Broken image']/following-sibling::img[1]")
     VALID_LINK = (By.XPATH, "//p[text()='Valid Link']/following-sibling::a[1]")
     BROKEN_LINK = (By.XPATH, "//p[text()='Broken Link']/following-sibling::a[1]")
+
+
+class UploadAndDownloadPageLocators:
+    DOWNLOAD_BUTTON = (By.CSS_SELECTOR, "a[id='downloadButton']")
+    UPLOAD_BUTTON = (By.CSS_SELECTOR, "input[id='uploadFile']")
+    UPLOADED_FILE_PATH = (By.CSS_SELECTOR, "p[id='uploadedFilePath']")

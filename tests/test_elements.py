@@ -1,5 +1,5 @@
 from pages.elements_page import (TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage, LinksPage,
-                                 BrokenLinksImagesPage)
+                                 BrokenLinksImagesPage, UploadAndDownloadPage)
 import pytest
 import random
 
@@ -154,3 +154,21 @@ class TestElements:
             broken_links_images_page.open()
             valid_link = broken_links_images_page.check_link_is_valid(link)
             assert valid_link, "URL link is broken"
+
+    class TestUploadAndDownload:
+        link = "https://demoqa.com/upload-download"
+
+        def test_file_can_be_downloaded(self, browser):
+            upload_and_download_page = UploadAndDownloadPage(browser, self.link)
+            upload_and_download_page.open()
+            upload_and_download_page.download_file()
+            file_exists = upload_and_download_page.check_downloaded_file_exists()
+            assert file_exists, "File is not downloaded"
+
+        def test_file_can_be_uploaded(self, browser, blank_file):
+            upload_and_download_page = UploadAndDownloadPage(browser, self.link)
+            upload_and_download_page.open()
+            test_file = blank_file(file_format="txt")
+            file_name = upload_and_download_page.upload_file(test_file)
+            output_path = upload_and_download_page.get_upload_path()
+            assert file_name in output_path, "File is not uploaded or output path is incorrect"
