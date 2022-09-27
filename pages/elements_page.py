@@ -1,10 +1,11 @@
 from locators.elements_page_locators import (TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators,
                                              WebTablesPageLocators, ButtonsPageLocators, LinksPageLocators,
-                                             BrokenLinksImagesPageLocators, UploadAndDownloadPageLocators)
+                                             BrokenLinksImagesPageLocators, UploadAndDownloadPageLocators,
+                                             DynamicPropertiesPageLocators)
 from pages.base_page import BasePage
 from generator.generator import generated_person
 from conftest import root_dir
-from selenium.common.exceptions import TimeoutException, InvalidArgumentException
+from selenium.common.exceptions import TimeoutException, InvalidArgumentException, NoSuchElementException
 from selenium.webdriver.support.ui import Select
 import random
 import requests
@@ -185,7 +186,7 @@ class LinksPage(BasePage):
     locators = LinksPageLocators()
 
     def check_link_opened_in_new_tab(self, link):
-        links = {"simple_link": self.locators.SIMPLE_LINK, "dynamic_link": self.locators.DYNAMIC_LINK}
+        links = {"Simple link": self.locators.SIMPLE_LINK, "Dynamic link": self.locators.DYNAMIC_LINK}
         link_locator = self.element_is_visible(links[link])
         url_link = link_locator.get_attribute("href")
         request = requests.get(url_link)
@@ -262,7 +263,8 @@ class UploadAndDownloadPage(BasePage):
     def upload_file(self, file_to_upload):
         try:
             self.element_is_visible(self.locators.UPLOAD_BUTTON).send_keys(file_to_upload)
-            return file_to_upload.rsplit("\\", maxsplit=1)[1]
+            file_name = file_to_upload.rsplit("\\", maxsplit=1)[1]
+            return file_name
         except InvalidArgumentException:
             return None
 
@@ -271,3 +273,40 @@ class UploadAndDownloadPage(BasePage):
             return self.element_is_present(self.locators.UPLOADED_FILE_PATH).text
         except TimeoutException:
             return []
+
+
+class DynamicPropertiesPage(BasePage):
+    locators = DynamicPropertiesPageLocators()
+
+    def check_button_is_disabled_by_default(self):
+        button = self.browser.find_element(*self.locators.ENABLE_AFTER_FIVE_SECONDS_BUTTON)
+        disabled_state = button.get_attribute("disabled")
+        return True if disabled_state else False
+
+    def check_button_is_enabled_after_five_seconds(self):
+        try:
+            self.element_is_clickable(self.locators.ENABLE_AFTER_FIVE_SECONDS_BUTTON, timeout=5)
+        except TimeoutException:
+            return False
+        return True
+
+    def check_button_color_is_changed_after_five_seconds(self):
+        button = self.element_is_present(self.locators.COLOR_CHANGE_BUTTON)
+        button_color_before = button.value_of_css_property("color")
+        time.sleep(5)
+        button_color_after = button.value_of_css_property("color")
+        return button_color_before, button_color_after
+
+    def check_button_is_absent_by_default(self):
+        try:
+            self.browser.find_element(*self.locators.VISIBLE_AFTER_FIVE_SECONDS_BUTTON)
+        except NoSuchElementException:
+            return True
+        return False
+
+    def check_button_is_appeared_after_five_seconds(self):
+        try:
+            self.element_is_visible(self.locators.VISIBLE_AFTER_FIVE_SECONDS_BUTTON, timeout=5)
+        except TimeoutException:
+            return False
+        return True

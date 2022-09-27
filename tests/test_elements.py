@@ -1,5 +1,5 @@
 from pages.elements_page import (TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage, LinksPage,
-                                 BrokenLinksImagesPage, UploadAndDownloadPage)
+                                 BrokenLinksImagesPage, UploadAndDownloadPage, DynamicPropertiesPage)
 import pytest
 import random
 
@@ -55,7 +55,7 @@ class TestElements:
             radio_button_page.open()
             radio_button_page.click_on_the_radio_button(button)
             output = radio_button_page.get_output_result()
-            assert button == output, f"Radio button '{button}' is not selected or output result is incorrect"
+            assert button == output, "Radio button is not selected or output result is incorrect"
 
     class TestWebTables:
         link = "https://demoqa.com/webtables"
@@ -116,7 +116,7 @@ class TestElements:
 
     class TestLinks:
         link = "https://demoqa.com/links"
-        new_tab_links = ["simple_link", "dynamic_link"]
+        new_tab_links = ["Simple link", "Dynamic link"]
         api_call_links = [("201", "Created"), ("204", "No Content"), ("301", "Moved Permanently"),
                           ("400", "Bad Request"), ("401", "Unauthorized"), ("403", "Forbidden"), ("404", "Not Found")]
 
@@ -170,5 +170,31 @@ class TestElements:
             upload_and_download_page.open()
             test_file = blank_file(file_format="txt")
             file_name = upload_and_download_page.upload_file(test_file)
+            assert file_name, "File is not uploaded"
             output_path = upload_and_download_page.get_upload_path()
-            assert file_name in output_path, "File is not uploaded or output path is incorrect"
+            assert file_name in output_path, "Output path is incorrect"
+
+    class TestDynamicProperties:
+        link = "https://demoqa.com/dynamic-properties"
+
+        def test_button_enables_after_five_seconds(self, browser):
+            dynamic_properties_page = DynamicPropertiesPage(browser, self.link)
+            dynamic_properties_page.open()
+            initially_disabled = dynamic_properties_page.check_button_is_disabled_by_default()
+            assert initially_disabled, "Button is not disabled by default"
+            enabled_after_five_seconds = dynamic_properties_page.check_button_is_enabled_after_five_seconds()
+            assert enabled_after_five_seconds, "Button is not enabled after five seconds"
+
+        def test_button_color_changes_after_five_seconds(self, browser):
+            dynamic_properties_page = DynamicPropertiesPage(browser, self.link)
+            dynamic_properties_page.open()
+            color_before, color_after = dynamic_properties_page.check_button_color_is_changed_after_five_seconds()
+            assert color_before != color_after, "Button color is not changed after five seconds"
+
+        def test_button_appears_after_five_seconds(self, browser):
+            dynamic_properties_page = DynamicPropertiesPage(browser, self.link)
+            dynamic_properties_page.open()
+            initially_is_absent = dynamic_properties_page.check_button_is_absent_by_default()
+            assert initially_is_absent, "Button is present by default"
+            appeared_after_five_seconds = dynamic_properties_page.check_button_is_appeared_after_five_seconds()
+            assert appeared_after_five_seconds, "Button is not appeared after five seconds"
