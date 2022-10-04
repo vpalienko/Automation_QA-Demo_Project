@@ -1,6 +1,7 @@
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import ActionChains
+from selenium.webdriver.support.select import Select
 
 
 class BasePage:
@@ -10,6 +11,12 @@ class BasePage:
 
     def open(self):
         self.browser.get(self.url)
+
+    def open_and_remove_footer(self):
+        self.browser.get(self.url)
+        self.browser.execute_script("document.getElementsByTagName('footer')[0].remove();")
+        self.browser.execute_script("document.getElementById('close-fixedban').remove();")
+        self.browser.execute_script("document.getElementById('adplus-anchor').remove();")
 
     def element_is_visible(self, locator, timeout=5):
         self.go_to_element(self.element_is_present(locator))
@@ -50,3 +57,12 @@ class BasePage:
 
     def switch_to_opened_window(self):
         self.browser.switch_to.window(self.browser.window_handles[1])
+
+    def select_option_by_text(self, menu_element, value):
+        select_menu = Select(self.element_is_present(menu_element))
+        select_menu.select_by_visible_text(value)
+
+    def get_all_options_from_select_menu(self, menu_element):
+        select_menu = Select(self.element_is_present(menu_element))
+        available_options = select_menu.options
+        return available_options
