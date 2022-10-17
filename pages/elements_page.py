@@ -286,9 +286,9 @@ class DynamicPropertiesPage(BasePage):
     def check_button_is_enabled_after_five_seconds(self):
         try:
             self.element_is_clickable(self.locators.ENABLE_AFTER_FIVE_SECONDS_BUTTON, timeout=5)
+            return True
         except TimeoutException:
             return False
-        return True
 
     def check_button_color_is_changed_after_five_seconds(self):
         button = self.element_is_present(self.locators.COLOR_CHANGE_BUTTON)
@@ -300,13 +300,13 @@ class DynamicPropertiesPage(BasePage):
     def check_button_is_absent_by_default(self):
         try:
             self.browser.find_element(*self.locators.VISIBLE_AFTER_FIVE_SECONDS_BUTTON)
+            return False
         except NoSuchElementException:
             return True
-        return False
 
     def check_button_is_appeared_after_five_seconds(self):
         try:
             self.element_is_visible(self.locators.VISIBLE_AFTER_FIVE_SECONDS_BUTTON, timeout=5)
+            return True
         except TimeoutException:
             return False
-        return True
