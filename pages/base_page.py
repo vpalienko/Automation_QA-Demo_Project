@@ -58,6 +58,9 @@ class BasePage:
     def switch_to_opened_window(self):
         self.browser.switch_to.window(self.browser.window_handles[1])
 
+    def switch_to_alert(self):
+        return self.browser.switch_to.alert
+
     def select_option_by_text(self, menu_element, value):
         select_menu = Select(self.element_is_present(menu_element))
         select_menu.select_by_visible_text(value)

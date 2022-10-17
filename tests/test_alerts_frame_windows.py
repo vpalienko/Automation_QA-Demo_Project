@@ -1,4 +1,4 @@
-from pages.alerts_frame_windows_page import BrowserWindowsPage
+from pages.alerts_frame_windows_page import BrowserWindowsPage, AlertsPage
 import pytest
 
 
@@ -13,3 +13,38 @@ class TestAlertsFrameWindows:
             browser_windows_page.open()
             windows_count = browser_windows_page.check_button_click_opens_new_window(button)
             assert windows_count == 2, "New window is not opened"
+
+    class TestAlerts:
+        link = "https://demoqa.com/alerts"
+
+        def test_simple_alert_appears_on_the_page(self, browser):
+            alerts_page = AlertsPage(browser, self.link)
+            alerts_page.open()
+            alert_appears = alerts_page.check_alert_appears_on_button_click()
+            assert alert_appears, "Alert is not appeared on the page"
+
+        def test_timer_alert_appears_after_five_seconds(self, browser):
+            alerts_page = AlertsPage(browser, self.link)
+            alerts_page.open()
+            initially_is_not_appeared = alerts_page.check_alert_is_not_appeared_on_button_click()
+            assert initially_is_not_appeared, "Alert appears on button click"
+            appeared_after_five_seconds = alerts_page.check_alert_appears_after_five_seconds()
+            assert appeared_after_five_seconds, "Alert is not appeared after five seconds"
+
+        def test_confirm_alert_box_can_be_accepted(self, browser):
+            alerts_page = AlertsPage(browser, self.link)
+            alerts_page.open()
+            result_text = alerts_page.close_confirm_alert_box(alert_action="accept")
+            assert result_text == "You selected Ok", "Alert is not accepted"
+
+        def test_confirm_alert_box_can_be_dismissed(self, browser):
+            alerts_page = AlertsPage(browser, self.link)
+            alerts_page.open()
+            result_text = alerts_page.close_confirm_alert_box(alert_action="dismiss")
+            assert result_text == "You selected Cancel", "Alert is not dismissed"
+
+        def test_text_can_be_entered_in_prompt_alert_box(self, browser):
+            alerts_page = AlertsPage(browser, self.link)
+            alerts_page.open()
+            entered_text, result_text = alerts_page.enter_random_text_in_prompt_alert_box()
+            assert entered_text in result_text, "Text is not entered in prompt alert box"
