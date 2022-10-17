@@ -272,7 +272,7 @@ class UploadAndDownloadPage(BasePage):
         try:
             return self.element_is_present(self.locators.UPLOADED_FILE_PATH).text
         except TimeoutException:
-            return []
+            return ""
 
 
 class DynamicPropertiesPage(BasePage):
