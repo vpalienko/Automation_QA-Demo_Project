@@ -1,5 +1,6 @@
 from pages.base_page import BasePage
-from locators.alerts_frame_windows_page_locators import BrowserWindowsPageLocators, AlertsPageLocators
+from locators.alerts_frame_windows_page_locators import (BrowserWindowsPageLocators, AlertsPageLocators,
+                                                         FramesPageLocators)
 from selenium.common.exceptions import NoAlertPresentException
 import time
 import random
@@ -72,3 +73,14 @@ class AlertsPage(BasePage):
             alert.accept()
             result_text = self.element_is_present(self.locators.PROMPT_BOX_RESULT_MESSAGE).text
             return entered_text, result_text
+
+
+class FramesPage(BasePage):
+    locators = FramesPageLocators()
+
+    def get_frame_title(self, frame_number):
+        frames = {"frame1": self.locators.FRAME_ONE, "frame2": self.locators.FRAME_TWO}
+        frame = self.element_is_present(frames[frame_number])
+        self.switch_to_frame(frame)
+        frame_title = self.element_is_visible(self.locators.FRAME_TITLE).text
+        return frame_title

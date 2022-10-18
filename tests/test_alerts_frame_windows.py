@@ -1,4 +1,4 @@
-from pages.alerts_frame_windows_page import BrowserWindowsPage, AlertsPage
+from pages.alerts_frame_windows_page import BrowserWindowsPage, AlertsPage, FramesPage
 import pytest
 
 
@@ -48,3 +48,14 @@ class TestAlertsFrameWindows:
             alerts_page.open()
             entered_text, result_text = alerts_page.enter_random_text_in_prompt_alert_box()
             assert entered_text in result_text, "Text is not entered in prompt alert box"
+
+    class TestFramesPage:
+        link = "https://demoqa.com/frames"
+        frames = ["frame1", "frame2"]
+
+        @pytest.mark.parametrize("frame", frames)
+        def test_title_is_displayed_inside_the_frame(self, browser, frame):
+            frames_page = FramesPage(browser, self.link)
+            frames_page.open()
+            frame_title = frames_page.get_frame_title(frame)
+            assert frame_title == "This is a sample page", "Incorrect title is displayed inside the frame"
