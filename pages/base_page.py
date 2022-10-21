@@ -64,6 +64,9 @@ class BasePage:
     def switch_to_frame(self, element):
         self.browser.switch_to.frame(element)
 
+    def switch_to_default_content(self):
+        self.browser.switch_to.default_content()
+
     def select_option_by_text(self, menu_element, value):
         select_menu = Select(self.element_is_present(menu_element))
         select_menu.select_by_visible_text(value)

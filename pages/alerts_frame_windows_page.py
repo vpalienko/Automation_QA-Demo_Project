@@ -1,7 +1,7 @@
 from pages.base_page import BasePage
 from locators.alerts_frame_windows_page_locators import (BrowserWindowsPageLocators, AlertsPageLocators,
-                                                         FramesPageLocators)
-from selenium.common.exceptions import NoAlertPresentException
+                                                         FramesPageLocators, NestedFramesPageLocators)
+from selenium.common.exceptions import NoAlertPresentException, TimeoutException
 import time
 import random
 
@@ -84,3 +84,27 @@ class FramesPage(BasePage):
         self.switch_to_frame(frame)
         frame_title = self.element_is_visible(self.locators.FRAME_TITLE).text
         return frame_title
+
+
+class NestedFramesPage(BasePage):
+    locators = NestedFramesPageLocators()
+
+    def get_text_of_frames(self):
+        parent_frame = self.element_is_present(self.locators.PARENT_FRAME)
+        self.switch_to_frame(parent_frame)
+        parent_frame_text = self.element_is_present(self.locators.PARENT_FRAME_TEXT).text
+        child_frame = self.element_is_present(self.locators.CHILD_FRAME)
+        self.switch_to_frame(child_frame)
+        child_frame_text = self.element_is_present(self.locators.CHILD_FRAME_TEXT).text
+        return parent_frame_text, child_frame_text
+
+    def check_that_frame_is_nested(self):
+        self.switch_to_default_content()
+        parent_frame = self.element_is_present(self.locators.PARENT_FRAME)
+        self.switch_to_frame(parent_frame)
+        try:
+            child_frame = self.element_is_present(self.locators.CHILD_FRAME)
+            self.switch_to_frame(child_frame)
+            return True
+        except TimeoutException:
+            return False

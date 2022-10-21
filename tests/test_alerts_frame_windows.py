@@ -1,4 +1,4 @@
-from pages.alerts_frame_windows_page import BrowserWindowsPage, AlertsPage, FramesPage
+from pages.alerts_frame_windows_page import BrowserWindowsPage, AlertsPage, FramesPage, NestedFramesPage
 import pytest
 
 
@@ -59,3 +59,15 @@ class TestAlertsFrameWindows:
             frames_page.open()
             frame_title = frames_page.get_frame_title(frame)
             assert frame_title == "This is a sample page", "Incorrect title is displayed inside the frame"
+
+    class TestNestedFramesPage:
+        link = "https://demoqa.com/nestedframes"
+
+        def test_child_frame_is_nested_in_parent_frame(self, browser):
+            nested_frames_page = NestedFramesPage(browser, self.link)
+            nested_frames_page.open()
+            parent_frame_text, child_frame_text = nested_frames_page.get_text_of_frames()
+            assert parent_frame_text == "Parent frame", "Incorrect parent frame text"
+            assert child_frame_text == "Child Iframe", "Incorrect child frame text"
+            frame_is_nested = nested_frames_page.check_that_frame_is_nested()
+            assert frame_is_nested, "Child frame is not nested in parent frame"
