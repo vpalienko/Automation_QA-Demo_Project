@@ -1,4 +1,5 @@
-from pages.alerts_frame_windows_page import BrowserWindowsPage, AlertsPage, FramesPage, NestedFramesPage
+from pages.alerts_frame_windows_page import (BrowserWindowsPage, AlertsPage, FramesPage, NestedFramesPage,
+                                             ModalDialogsPage)
 import pytest
 
 
@@ -71,3 +72,22 @@ class TestAlertsFrameWindows:
             assert child_frame_text == "Child Iframe", "Incorrect child frame text"
             frame_is_nested = nested_frames_page.check_that_frame_is_nested()
             assert frame_is_nested, "Child frame is not nested in parent frame"
+
+    class TestModalDialogsPage:
+        link = "https://demoqa.com/modal-dialogs"
+        modal_dialog_titles = ["Small Modal", "Large Modal"]
+
+        @pytest.mark.parametrize("dialog_title", modal_dialog_titles)
+        def test_modal_dialog_is_opened_on_button_click(self, browser, dialog_title):
+            modal_dialogs_page = ModalDialogsPage(browser, self.link)
+            modal_dialogs_page.open()
+            modal_dialog_is_opened = modal_dialogs_page.check_button_click_opens_modal_dialog(dialog_title)
+            assert modal_dialog_is_opened, "Modal dialog is not opened on button click"
+
+        @pytest.mark.parametrize("dialog_title", modal_dialog_titles)
+        def test_modal_dialog_has_title_and_content(self, browser, dialog_title):
+            modal_dialogs_page = ModalDialogsPage(browser, self.link)
+            modal_dialogs_page.open()
+            actual_dialog_title, dialog_content = modal_dialogs_page.get_modal_dialog_title_and_content(dialog_title)
+            assert actual_dialog_title == dialog_title, "Modal dialog has incorrect title"
+            assert dialog_content, "Modal dialog content is absent"

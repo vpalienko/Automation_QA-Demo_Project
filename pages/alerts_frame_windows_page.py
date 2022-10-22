@@ -1,6 +1,7 @@
 from pages.base_page import BasePage
 from locators.alerts_frame_windows_page_locators import (BrowserWindowsPageLocators, AlertsPageLocators,
-                                                         FramesPageLocators, NestedFramesPageLocators)
+                                                         FramesPageLocators, NestedFramesPageLocators,
+                                                         ModalDialogsPageLocators)
 from selenium.common.exceptions import NoAlertPresentException, TimeoutException
 import time
 import random
@@ -108,3 +109,35 @@ class NestedFramesPage(BasePage):
             return True
         except TimeoutException:
             return False
+
+
+class ModalDialogsPage(BasePage):
+    locators = ModalDialogsPageLocators()
+
+    def check_button_click_opens_modal_dialog(self, modal_dialog_button):
+        modal_dialogs = {"Small Modal": {"modal_button": self.locators.SMALL_MODAL_BUTTON,
+                                         "modal_dialog": self.locators.SMALL_MODAL_DIALOG,
+                                         "close_button": self.locators.SMALL_MODAL_DIALOG_CLOSE_BUTTON},
+                         "Large Modal": {"modal_button": self.locators.LARGE_MODAL_BUTTON,
+                                         "modal_dialog": self.locators.LARGE_MODAL_DIALOG,
+                                         "close_button": self.locators.LARGE_MODAL_DIALOG_CLOSE_BUTTON}}
+        self.element_is_visible(modal_dialogs[modal_dialog_button]["modal_button"]).click()
+        try:
+            self.element_is_visible(modal_dialogs[modal_dialog_button]["modal_dialog"])
+        except TimeoutException:
+            return False
+        else:
+            self.element_is_visible(modal_dialogs[modal_dialog_button]["close_button"]).click()
+            return True
+
+    def get_modal_dialog_title_and_content(self, modal_dialog_button):
+        modal_dialogs = {"Small Modal": {"modal_button": self.locators.SMALL_MODAL_BUTTON,
+                                         "modal_dialog_title": self.locators.SMALL_MODAL_DIALOG_TITLE,
+                                         "modal_dialog_content": self.locators.SMALL_MODAL_DIALOG_CONTENT},
+                         "Large Modal": {"modal_button": self.locators.LARGE_MODAL_BUTTON,
+                                         "modal_dialog_title": self.locators.LARGE_MODAL_DIALOG_TITLE,
+                                         "modal_dialog_content": self.locators.LARGE_MODAL_DIALOG_CONTENT}}
+        self.element_is_visible(modal_dialogs[modal_dialog_button]["modal_button"]).click()
+        modal_dialog_title = self.element_is_present(modal_dialogs[modal_dialog_button]["modal_dialog_title"]).text
+        modal_dialog_content = self.element_is_present(modal_dialogs[modal_dialog_button]["modal_dialog_content"]).text
+        return modal_dialog_title, modal_dialog_content
