@@ -50,7 +50,7 @@ class TestAlertsFrameWindows:
             entered_text, result_text = alerts_page.enter_random_text_in_prompt_alert_box()
             assert entered_text in result_text, "Text is not entered in prompt alert box"
 
-    class TestFramesPage:
+    class TestFrames:
         link = "https://demoqa.com/frames"
         frames = ["frame1", "frame2"]
 
@@ -61,7 +61,7 @@ class TestAlertsFrameWindows:
             frame_title = frames_page.get_frame_title(frame)
             assert frame_title == "This is a sample page", "Incorrect title is displayed inside the frame"
 
-    class TestNestedFramesPage:
+    class TestNestedFrames:
         link = "https://demoqa.com/nestedframes"
 
         def test_child_frame_is_nested_in_parent_frame(self, browser):
@@ -73,7 +73,7 @@ class TestAlertsFrameWindows:
             frame_is_nested = nested_frames_page.check_that_frame_is_nested()
             assert frame_is_nested, "Child frame is not nested in parent frame"
 
-    class TestModalDialogsPage:
+    class TestModalDialogs:
         link = "https://demoqa.com/modal-dialogs"
         modal_dialog_titles = ["Small Modal", "Large Modal"]
 
