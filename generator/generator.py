@@ -34,3 +34,8 @@ def generated_state_and_city():
     random_state = random.choice(list(states_and_cities.keys()))
     random_city = random.choice(states_and_cities[random_state])
     return random_state, random_city
+
+
+def generated_colors():
+    colors = ["Red", "Blue", "Green", "Yellow", "Purple", "Black", "White", "Voilet", "Indigo", "Magenta", "Aqua"]
+    return colors
