@@ -1,4 +1,4 @@
-from data.data import Person
+from data.data import Person, Date, DateAndTime
 from faker import Faker
 import random
 
@@ -39,3 +39,22 @@ def generated_state_and_city():
 def generated_colors():
     colors = ["Red", "Blue", "Green", "Yellow", "Purple", "Black", "White", "Voilet", "Indigo", "Magenta", "Aqua"]
     return colors
+
+
+def generated_date():
+    return Date(
+        date=faker_en.date(pattern="%B %#d %Y")
+    )
+
+
+def generated_time():
+    hours = random.randint(0, 23)
+    minutes = random.randrange(0, 46, 15)
+    return f"{hours:02d}:{minutes:02d}"
+
+
+def generated_date_and_time():
+    return DateAndTime(
+        date=faker_en.date(pattern="%B %#d %Y"),
+        time=generated_time()
+    )

@@ -13,3 +13,13 @@ class Person:
     current_address: str = None
     permanent_address: str = None
     mobile: str = None
+
+
+@dataclass
+class Date:
+    date: str = None
+
+
+@dataclass
+class DateAndTime(Date):
+    time: str = None

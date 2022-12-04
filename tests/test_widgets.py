@@ -1,4 +1,4 @@
-from pages.widgets_page import AccordianPage, AutoCompletePage
+from pages.widgets_page import AccordianPage, AutoCompletePage, DatePickerPage
 import pytest
 
 
@@ -65,3 +65,20 @@ class TestWidgets:
             autocomplete_page.enter_two_color_names()
             number_of_output_colors = autocomplete_page.get_number_of_color_names(field="single")
             assert number_of_output_colors == 1, "Several color names can be entered in single input field"
+
+    class TestDatePicker:
+        link = "https://demoqa.com/date-picker"
+
+        def test_date_can_be_selected_via_date_picker(self, browser):
+            date_picker_page = DatePickerPage(browser, self.link)
+            date_picker_page.open()
+            input_date = date_picker_page.select_date()
+            output_date = date_picker_page.get_output_date(field="date")
+            assert input_date == output_date, "Date is not selected via date picker"
+
+        def test_date_and_time_can_be_set_via_date_picker(self, browser):
+            date_picker_page = DatePickerPage(browser, self.link)
+            date_picker_page.open()
+            input_date = date_picker_page.set_date_and_time()
+            output_date = date_picker_page.get_output_date(field="date_and_time")
+            assert input_date == output_date, "Date is not set via date picker"
