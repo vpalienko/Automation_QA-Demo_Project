@@ -1,5 +1,6 @@
 from pages.base_page import BasePage
-from locators.widgets_page_locators import AccordianPageLocators, AutoCompletePageLocators, DatePickerPageLocators
+from locators.widgets_page_locators import (AccordianPageLocators, AutoCompletePageLocators, DatePickerPageLocators,
+                                            SliderPageLocators)
 from generator.generator import generated_colors, generated_date, generated_date_and_time
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
@@ -173,3 +174,14 @@ class DatePickerPage(BasePage):
         input_field = self.element_is_visible(input_fields[field])
         input_field_value = input_field.get_attribute("value")
         return input_field_value
+
+
+class SliderPage(BasePage):
+    locators = SliderPageLocators()
+
+    def move_slider(self):
+        slider_value_before = self.element_is_present(self.locators.SLIDER_VALUE).get_attribute("value")
+        slider = self.element_is_visible(self.locators.SLIDER)
+        self.drag_and_drop_by_offset_action(slider, random.randint(1, 150), 0)
+        slider_value_after = self.element_is_present(self.locators.SLIDER_VALUE).get_attribute("value")
+        return slider_value_before, slider_value_after

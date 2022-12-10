@@ -55,6 +55,11 @@ class BasePage:
         action.click(element)
         action.perform()
 
+    def drag_and_drop_by_offset_action(self, element, x_coordinate, y_coordinate):
+        action = ActionChains(self.browser)
+        action.drag_and_drop_by_offset(element, x_coordinate, y_coordinate)
+        action.perform()
+
     def switch_to_opened_window(self):
         self.browser.switch_to.window(self.browser.window_handles[1])
 

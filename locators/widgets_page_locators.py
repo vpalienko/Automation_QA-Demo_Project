@@ -37,3 +37,8 @@ class DatePickerPageLocators:
     DATE_AND_TIME_YEAR_OPTION = (By.CSS_SELECTOR, "div[class*='year-option']:not(:first-child):not(:last-child)")
     DATE_AND_TIME_YEAR_UPCOMING_OPTION = (By.CSS_SELECTOR, "a[class$='years-upcoming']")
     DATE_AND_TIME_YEAR_PREVIOUS_OPTION = (By.CSS_SELECTOR, "a[class$='years-previous']")
+
+
+class SliderPageLocators:
+    SLIDER = (By.CSS_SELECTOR, "input[class='range-slider range-slider--primary']")
+    SLIDER_VALUE = (By.CSS_SELECTOR, "input[id='sliderValue']")

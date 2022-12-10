@@ -1,4 +1,4 @@
-from pages.widgets_page import AccordianPage, AutoCompletePage, DatePickerPage
+from pages.widgets_page import AccordianPage, AutoCompletePage, DatePickerPage, SliderPage
 import pytest
 
 
@@ -82,3 +82,12 @@ class TestWidgets:
             input_date = date_picker_page.set_date_and_time()
             output_date = date_picker_page.get_output_date(field="date_and_time")
             assert input_date == output_date, "Date is not set via date picker"
+
+    class TestSlider:
+        link = "https://demoqa.com/slider"
+
+        def test_slider_value_changes_after_slider_is_moved(self, browser):
+            slider_page = SliderPage(browser, self.link)
+            slider_page.open()
+            value_before, value_after = slider_page.move_slider()
+            assert value_before != value_after, "Slider value is not changed or slider is not moved"
