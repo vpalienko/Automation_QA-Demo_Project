@@ -1,6 +1,6 @@
 from pages.base_page import BasePage
 from locators.widgets_page_locators import (AccordianPageLocators, AutoCompletePageLocators, DatePickerPageLocators,
-                                            SliderPageLocators)
+                                            SliderPageLocators, ProgressBarPageLocators)
 from generator.generator import generated_colors, generated_date, generated_date_and_time
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
@@ -185,3 +185,26 @@ class SliderPage(BasePage):
         self.drag_and_drop_by_offset_action(slider, random.randint(1, 150), 0)
         slider_value_after = self.element_is_present(self.locators.SLIDER_VALUE).get_attribute("value")
         return slider_value_before, slider_value_after
+
+
+class ProgressBarPage(BasePage):
+    locators = ProgressBarPageLocators()
+
+    def change_progress_bar_value(self):
+        value_before = self.element_is_present(self.locators.PROGRESS_BAR_VALUE).get_attribute("textContent")
+        start_stop_button = self.element_is_clickable(self.locators.PROGRESS_BAR_START_STOP_BUTTON)
+        start_stop_button.click()
+        time.sleep(round(random.uniform(0.1, 9.9), 1))
+        start_stop_button.click()
+        value_after = self.element_is_present(self.locators.PROGRESS_BAR_VALUE).text
+        return value_before, value_after
+
+    def reset_progress_bar_value(self):
+        initial_value = self.element_is_present(self.locators.PROGRESS_BAR_VALUE).get_attribute("textContent")
+        start_button = self.element_is_clickable(self.locators.PROGRESS_BAR_START_STOP_BUTTON)
+        start_button.click()
+        reset_button = self.element_is_clickable(self.locators.PROGRESS_BAR_RESET_BUTTON, timeout=20)
+        value_before_reset = self.element_is_present(self.locators.PROGRESS_BAR_VALUE_SUCCESS).text
+        reset_button.click()
+        value_after_reset = self.element_is_present(self.locators.PROGRESS_BAR_VALUE).text
+        return initial_value, value_before_reset, value_after_reset

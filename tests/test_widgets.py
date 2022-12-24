@@ -1,4 +1,4 @@
-from pages.widgets_page import AccordianPage, AutoCompletePage, DatePickerPage, SliderPage
+from pages.widgets_page import AccordianPage, AutoCompletePage, DatePickerPage, SliderPage, ProgressBarPage
 import pytest
 
 
@@ -91,3 +91,19 @@ class TestWidgets:
             slider_page.open()
             value_before, value_after = slider_page.move_slider()
             assert value_before != value_after, "Slider value is not changed or slider is not moved"
+
+    class TestProgressBar:
+        link = "https://demoqa.com/progress-bar"
+
+        def test_progress_bar_value_can_be_changed(self, browser):
+            progress_bar_page = ProgressBarPage(browser, self.link)
+            progress_bar_page.open()
+            value_before, value_after = progress_bar_page.change_progress_bar_value()
+            assert value_before != value_after, "Progress bar value is not changed"
+
+        def test_progress_bar_can_be_filled_and_reset(self, browser):
+            progress_bar_page = ProgressBarPage(browser, self.link)
+            progress_bar_page.open()
+            initial_value, value_before_reset, value_after_reset = progress_bar_page.reset_progress_bar_value()
+            assert value_before_reset == "100%", "Progress bar full value is not 100%"
+            assert initial_value == value_after_reset, "Progress bar value is not reset"
