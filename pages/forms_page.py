@@ -83,7 +83,6 @@ class PracticeFormPage(BasePage):
         return f"{state} {city}"
 
     def submit_form(self):
-        self.go_to_element(self.element_is_present(self.locators.SUBMIT))
         self.element_is_visible(self.locators.SUBMIT).click()
 
     def get_submitted_values(self):
