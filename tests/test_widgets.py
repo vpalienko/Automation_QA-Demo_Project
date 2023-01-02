@@ -1,4 +1,4 @@
-from pages.widgets_page import AccordianPage, AutoCompletePage, DatePickerPage, SliderPage, ProgressBarPage
+from pages.widgets_page import AccordianPage, AutoCompletePage, DatePickerPage, SliderPage, ProgressBarPage, TabsPage
 import pytest
 
 
@@ -107,3 +107,17 @@ class TestWidgets:
             initial_value, value_before_reset, value_after_reset = progress_bar_page.reset_progress_bar_value()
             assert value_before_reset == "100%", "Progress bar full value is not 100%"
             assert initial_value == value_after_reset, "Progress bar value is not reset"
+
+    class TestTabs:
+        link = "https://demoqa.com/tabs"
+        tabs = ["What", "Origin", "Use", pytest.param("More", marks=pytest.mark.xfail(reason="tab disabled"))]
+
+        @pytest.mark.parametrize("tab_name", tabs)
+        def test_selected_tab_has_title_and_content(self, browser, tab_name):
+            tabs_page = TabsPage(browser, self.link)
+            tabs_page.open()
+            tab_is_selected = tabs_page.click_on_the_tab(tab_name)
+            assert tab_is_selected, "Tab is not selected"
+            actual_tab_title, tab_content = tabs_page.get_tab_title_and_content(tab_name)
+            assert actual_tab_title == tab_name, "Tab has incorrect title"
+            assert tab_content, "Tab content is absent"
