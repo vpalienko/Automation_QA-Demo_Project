@@ -1,6 +1,7 @@
 from pages.base_page import BasePage
 from locators.widgets_page_locators import (AccordianPageLocators, AutoCompletePageLocators, DatePickerPageLocators,
-                                            SliderPageLocators, ProgressBarPageLocators, TabsPageLocators)
+                                            SliderPageLocators, ProgressBarPageLocators, TabsPageLocators,
+                                            ToolTipsPageLocators)
 from generator.generator import generated_colors, generated_date, generated_date_and_time
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
 from selenium.webdriver import Keys
@@ -248,3 +249,28 @@ class TabsPage(BasePage):
         except TimeoutException:
             title_and_content.append(None)
         return title_and_content
+
+
+class ToolTipsPage(BasePage):
+    locators = ToolTipsPageLocators()
+
+    def hover_over_element_to_show_tooltip(self, hover_element):
+        elements = {"Button": {"element": self.locators.BUTTON,
+                               "tooltip": self.locators.BUTTON_TOOLTIP},
+                    "text field": {"element": self.locators.TEXT_FIELD,
+                                   "tooltip": self.locators.TEXT_FIELD_TOOLTIP},
+                    "Contrary": {"element": self.locators.CONTRARY_LINK,
+                                 "tooltip": self.locators.CONTRARY_LINK_TOOLTIP},
+                    "1.10.32": {"element": self.locators.SECTION_LINK,
+                                "tooltip": self.locators.SECTION_LINK_TOOLTIP}}
+        element = self.element_is_visible(elements[hover_element]["element"])
+        self.move_to_element_action(element)
+        try:
+            self.element_is_visible(elements[hover_element]["tooltip"])
+            return True
+        except TimeoutException:
+            return False
+
+    def get_tooltip_text(self):
+        tooltip_text = self.element_is_present(self.locators.TOOLTIP_INNER_CONTENT).text
+        return tooltip_text

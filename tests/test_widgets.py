@@ -1,4 +1,5 @@
-from pages.widgets_page import AccordianPage, AutoCompletePage, DatePickerPage, SliderPage, ProgressBarPage, TabsPage
+from pages.widgets_page import (AccordianPage, AutoCompletePage, DatePickerPage, SliderPage, ProgressBarPage, TabsPage,
+                                ToolTipsPage)
 import pytest
 
 
@@ -121,3 +122,16 @@ class TestWidgets:
             actual_tab_title, tab_content = tabs_page.get_tab_title_and_content(tab_name)
             assert actual_tab_title == tab_name, "Tab has incorrect title"
             assert tab_content, "Tab content is absent"
+
+    class TestToolTips:
+        link = "https://demoqa.com/tool-tips"
+        elements_with_tooltips = ["Button", "text field", "Contrary", "1.10.32"]
+
+        @pytest.mark.parametrize("tooltip_element", elements_with_tooltips)
+        def test_tooltip_is_displayed_and_has_text(self, browser, tooltip_element):
+            tooltip_page = ToolTipsPage(browser, self.link)
+            tooltip_page.open()
+            tooltip_is_displayed = tooltip_page.hover_over_element_to_show_tooltip(tooltip_element)
+            assert tooltip_is_displayed, "Tooltip isn't displayed"
+            tooltip_text = tooltip_page.get_tooltip_text()
+            assert tooltip_text == f"You hovered over the {tooltip_element}", "Tooltip has incorrect text"
