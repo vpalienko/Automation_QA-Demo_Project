@@ -1,5 +1,5 @@
 from pages.widgets_page import (AccordianPage, AutoCompletePage, DatePickerPage, SliderPage, ProgressBarPage, TabsPage,
-                                ToolTipsPage)
+                                ToolTipsPage, MenuPage)
 import pytest
 
 
@@ -135,3 +135,14 @@ class TestWidgets:
             assert tooltip_is_displayed, "Tooltip isn't displayed"
             tooltip_text = tooltip_page.get_tooltip_text()
             assert tooltip_text == f"You hovered over the {tooltip_element}", "Tooltip has incorrect text"
+
+    class TestMenu:
+        link = "https://demoqa.com/menu"
+        expected_menu_items = ["Main Item 1", "Main Item 2", "Sub Item", "Sub Item", "SUB SUB LIST »", "Sub Sub Item 1",
+                               "Sub Sub Item 2", "Main Item 3"]
+
+        def test_all_menu_items_are_present(self, browser):
+            menu_page = MenuPage(browser, self.link)
+            menu_page.open()
+            available_menu_items = menu_page.check_available_menu_items()
+            assert available_menu_items == self.expected_menu_items, "Some menu items are not present"

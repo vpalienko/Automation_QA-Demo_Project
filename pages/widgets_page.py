@@ -1,7 +1,7 @@
 from pages.base_page import BasePage
 from locators.widgets_page_locators import (AccordianPageLocators, AutoCompletePageLocators, DatePickerPageLocators,
                                             SliderPageLocators, ProgressBarPageLocators, TabsPageLocators,
-                                            ToolTipsPageLocators)
+                                            ToolTipsPageLocators, MenuPageLocators)
 from generator.generator import generated_colors, generated_date, generated_date_and_time
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
 from selenium.webdriver import Keys
@@ -274,3 +274,15 @@ class ToolTipsPage(BasePage):
     def get_tooltip_text(self):
         tooltip_text = self.element_is_present(self.locators.TOOLTIP_INNER_CONTENT).text
         return tooltip_text
+
+
+class MenuPage(BasePage):
+    locators = MenuPageLocators()
+
+    def check_available_menu_items(self):
+        menu_items = self.elements_are_present(self.locators.MENU_ITEMS)
+        available_menu_items = []
+        for item in menu_items:
+            self.move_to_element_action(item)
+            available_menu_items.append(item.text)
+        return available_menu_items
