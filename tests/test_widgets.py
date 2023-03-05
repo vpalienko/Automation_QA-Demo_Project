@@ -1,5 +1,5 @@
 from pages.widgets_page import (AccordianPage, AutoCompletePage, DatePickerPage, SliderPage, ProgressBarPage, TabsPage,
-                                ToolTipsPage, MenuPage)
+                                ToolTipsPage, MenuPage, SelectMenuPage)
 import pytest
 
 
@@ -146,3 +146,24 @@ class TestWidgets:
             menu_page.open()
             available_menu_items = menu_page.check_available_menu_items()
             assert available_menu_items == self.expected_menu_items, "Some menu items are not present"
+
+    class TestSelectMenu:
+        link = "https://demoqa.com/select-menu"
+        select_menu_names = ["Select Value", "Select One", "Old Style Select Menu"]
+        multiselect_menu_names = ["Multiselect drop down", "Standard multi select"]
+
+        @pytest.mark.parametrize("select_menu", select_menu_names)
+        def test_one_item_can_be_selected_from_select_menu(self, browser, select_menu):
+            select_menu_page = SelectMenuPage(browser, self.link)
+            select_menu_page.open()
+            menu_item = select_menu_page.select_one_menu_item(select_menu)
+            selected_menu_item = select_menu_page.get_selected_menu_items(select_menu)
+            assert menu_item == selected_menu_item, "Incorrect menu item selected from select menu"
+
+        @pytest.mark.parametrize("multiselect_menu", multiselect_menu_names)
+        def test_several_items_can_be_selected_from_multiselect_menu(self, browser, multiselect_menu):
+            select_menu_page = SelectMenuPage(browser, self.link)
+            select_menu_page.open()
+            menu_items = select_menu_page.select_several_menu_items(multiselect_menu)
+            selected_menu_items = select_menu_page.get_selected_menu_items(multiselect_menu)
+            assert menu_items == selected_menu_items, "Incorrect menu items selected from multiselect menu"

@@ -1,10 +1,11 @@
 from pages.base_page import BasePage
 from locators.widgets_page_locators import (AccordianPageLocators, AutoCompletePageLocators, DatePickerPageLocators,
                                             SliderPageLocators, ProgressBarPageLocators, TabsPageLocators,
-                                            ToolTipsPageLocators, MenuPageLocators)
+                                            ToolTipsPageLocators, MenuPageLocators, SelectMenuPageLocators)
 from generator.generator import generated_colors, generated_date, generated_date_and_time
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
 from selenium.webdriver import Keys
+from selenium.webdriver.support.select import Select
 import random
 import calendar
 import time
@@ -235,8 +236,7 @@ class TabsPage(BasePage):
                 "Use": {"title": self.locators.TAB_USE,
                         "content": self.locators.TAB_USE_CONTENT},
                 "More": {"title": self.locators.TAB_MORE,
-                         "content": self.locators.TAB_MORE_CONTENT}
-                }
+                         "content": self.locators.TAB_MORE_CONTENT}}
         title_and_content = []
         try:
             tab_title = self.element_is_present(tabs[tab_name]["title"]).text
@@ -286,3 +286,72 @@ class MenuPage(BasePage):
             self.move_to_element_action(item)
             available_menu_items.append(item.text)
         return available_menu_items
+
+
+class SelectMenuPage(BasePage):
+    locators = SelectMenuPageLocators()
+
+    def select_one_menu_item(self, menu_type):
+        menu = {"Select Value": {"field": self.locators.SELECT_VALUE_MENU_FIELD,
+                                 "options": self.locators.SELECT_VALUE_MENU_OPTIONS},
+                "Select One": {"field": self.locators.SELECT_ONE_MENU_FIELD,
+                               "options": self.locators.SELECT_ONE_MENU_OPTIONS},
+                "Old Style Select Menu": {"field": self.locators.SELECT_OLD_STYLE_MENU_FIELD}}
+        if menu_type in ["Select Value", "Select One"]:
+            select_menu = self.element_is_visible(menu[menu_type]["field"])
+            select_menu.click()
+            menu_options_list = self.elements_are_present(menu[menu_type]["options"])
+            random_option = random.choice(menu_options_list)
+            random_option_text = random_option.text
+            random_option.click()
+            return random_option_text
+        elif menu_type == "Old Style Select Menu":
+            select_menu = Select(self.element_is_visible(menu[menu_type]["field"]))
+            random_option = random.choice(select_menu.options)
+            random_option_text = random_option.text
+            select_menu.select_by_visible_text(random_option_text)
+            return random_option_text
+
+    def select_several_menu_items(self, menu_type):
+        menu = {"Multiselect drop down": {"field": self.locators.MULTI_SELECT_DROP_DOWN_FIELD,
+                                          "options": self.locators.MULTI_SELECT_DROP_DOWN_OPTIONS},
+                "Standard multi select": {"field": self.locators.MULTI_SELECT_STANDARD_MENU_FIELD}}
+        if menu_type == "Multiselect drop down":
+            multiselect_menu = self.element_is_visible(menu[menu_type]["field"])
+            multiselect_menu.click()
+            menu_options_list = self.elements_are_present(menu[menu_type]["options"])
+            random_options = random.sample(menu_options_list, k=random.randint(2, 4))
+            random_options_text_list = [option.text for option in random_options]
+            for option in random_options:
+                option.click()
+            return random_options_text_list
+        elif menu_type == "Standard multi select":
+            multiselect_menu = Select(self.element_is_visible(menu[menu_type]["field"]))
+            random_options = random.sample(multiselect_menu.options, k=random.randint(2, 4))
+            random_options_text_list = [option.text for option in random_options]
+            for option in random_options_text_list:
+                multiselect_menu.select_by_visible_text(option)
+            return sorted(random_options_text_list)
+
+    def get_selected_menu_items(self, menu_type):
+        menu = {"Select Value": self.locators.SELECT_VALUE_MENU_FIELD,
+                "Select One": self.locators.SELECT_ONE_MENU_FIELD,
+                "Old Style Select Menu": self.locators.SELECT_OLD_STYLE_MENU_FIELD,
+                "Multiselect drop down": self.locators.MULTI_SELECT_DROP_DOWN_SELECTED_OPTIONS,
+                "Standard multi select": self.locators.MULTI_SELECT_STANDARD_MENU_FIELD}
+        if menu_type in ["Select Value", "Select One"]:
+            menu_element = self.element_is_visible(menu[menu_type])
+            selected_menu_item = menu_element.text
+            return selected_menu_item
+        elif menu_type == "Old Style Select Menu":
+            menu_element = Select(self.element_is_visible(menu[menu_type]))
+            selected_menu_item = menu_element.first_selected_option.text
+            return selected_menu_item
+        elif menu_type == "Multiselect drop down":
+            selected_items = self.elements_are_visible(menu[menu_type])
+            selected_menu_items = [option.text for option in selected_items]
+            return selected_menu_items
+        elif menu_type == "Standard multi select":
+            menu_element = Select(self.element_is_visible(menu[menu_type]))
+            selected_menu_items = [option.text for option in menu_element.all_selected_options]
+            return sorted(selected_menu_items)
