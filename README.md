@@ -1,7 +1,6 @@
 # Automation QA (Python) - Demo Project
-#### **My test automation demo project of** https://demoqa.com/
-<br/><br/>
-<br/><br/>
+### **My test automation demo project of** https://demoqa.com/
+
 Test environment:
 - Windows 10
 - Google Chrome
