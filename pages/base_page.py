@@ -60,6 +60,11 @@ class BasePage:
         action.drag_and_drop_by_offset(element, x_coordinate, y_coordinate)
         action.perform()
 
+    def drag_and_drop_to_target_action(self, element, target):
+        action = ActionChains(self.browser)
+        action.drag_and_drop(element, target)
+        action.perform()
+
     def move_to_element_action(self, element):
         action = ActionChains(self.browser)
         action.move_to_element(element)
