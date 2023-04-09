@@ -90,3 +90,9 @@ class BasePage:
         select_menu = Select(self.element_is_present(menu_element))
         available_options = select_menu.options
         return available_options
+
+    def open_tab(self, tab_element):
+        tab = self.element_is_visible(tab_element)
+        tab_is_selected = tab.get_attribute("aria-selected")
+        if tab_is_selected == "false":
+            tab.click()
