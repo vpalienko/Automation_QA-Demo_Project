@@ -1,5 +1,5 @@
 from pages.base_page import BasePage
-from locators.interactions_page_locators import SortablePageLocators, SelectablePageLocators
+from locators.interactions_page_locators import SortablePageLocators, SelectablePageLocators, ResizablePageLocators
 import random
 
 
@@ -51,3 +51,47 @@ class SelectablePage(BasePage):
         items_list = self.elements_are_visible(tab_item[tab_name])
         for item in items_list:
             item.click()
+
+
+class ResizablePage(BasePage):
+    locators = ResizablePageLocators()
+
+    def get_element_width_and_height(self, element):
+        element_size = self.element_is_visible(element).get_attribute("style")
+        width = element_size.split(";")[0].split(": ")[1]
+        height = element_size.split(";")[1].split(": ")[1]
+        return width, height
+
+    def get_resizable_box_width_and_height(self):
+        resizable_box_width, resizable_box_height = self.get_element_width_and_height(self.locators.RESIZABLE_BOX)
+        return resizable_box_width, resizable_box_height
+
+    def get_resizable_width_and_height(self):
+        resizable_width, resizable_height = self.get_element_width_and_height(self.locators.RESIZABLE)
+        return resizable_width, resizable_height
+
+    def increase_resizable_element(self, element, width, height):
+        if width == "random_value":
+            width = random.randint(1, 150)
+        if height == "random_value":
+            height = random.randint(1, 150)
+        self.drag_and_drop_by_offset_action(self.element_is_present(element), abs(width), abs(height))
+
+    def decrease_resizable_element(self, element, width, height):
+        if width == "random_value":
+            width = random.randint(-150, -1)
+        if height == "random_value":
+            height = random.randint(-150, -1)
+        self.drag_and_drop_by_offset_action(self.element_is_present(element), -abs(width), -abs(height))
+
+    def change_resizable_box_size(self, operation="increase", width="random_value", height="random_value"):
+        if operation == "increase":
+            self.increase_resizable_element(self.locators.RESIZABLE_BOX_HANDLE, width, height)
+        elif operation == "decrease":
+            self.decrease_resizable_element(self.locators.RESIZABLE_BOX_HANDLE, width, height)
+
+    def change_resizable_size(self, operation="increase", width="random_value", height="random_value"):
+        if operation == "increase":
+            self.increase_resizable_element(self.locators.RESIZABLE_HANDLE, width, height)
+        elif operation == "decrease":
+            self.decrease_resizable_element(self.locators.RESIZABLE_HANDLE, width, height)
